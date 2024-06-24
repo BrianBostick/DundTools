@@ -1,4 +1,4 @@
-OBJS = tui.o diceroll.o ascii_nums.o
+OBJS = tui.o diceroll.o ascii_nums.o character_creator.o logos.o
 CFLAGS = -Wall -g
 CC = g++
 INCLUDE =
