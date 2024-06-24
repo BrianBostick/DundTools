@@ -12,6 +12,20 @@ void zeroRoll(WINDOW *win)
     mvwprintw(win, 3, 1, "0");
 }
 
+void nat20(WINDOW *win)
+{
+    start_color();
+    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    wattron(win, COLOR_PAIR(1) | A_BOLD);
+
+    mvwprintw(win, 1, 1, " ____    ___  ");
+    mvwprintw(win, 2, 1, "|___ \\  / _ \\ ");
+    mvwprintw(win, 3, 1, "  __) || | | |");
+    mvwprintw(win, 4, 1, " / __/ | |_| |");
+    mvwprintw(win, 5, 1, "|_____| \\___/ ");
+
+    wattroff(win, COLOR_PAIR(1) | A_BOLD);
+}
 // P A I N
 
 void ascii1(WINDOW *win)

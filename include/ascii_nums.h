@@ -111,6 +111,7 @@ void ascii100(WINDOW*);
 
 void over100(WINDOW*);
 void zeroRoll(WINDOW*);
+void nat20(WINDOW*);
 void printAscii(WINDOW*, int);
 
 #endif
