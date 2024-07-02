@@ -5,7 +5,16 @@ A collection of TUI and CLI tools for D&D 5e games.
 
 The only dependency is Ncurses.
 
-If you want to build the program, install the Ncurses library (should be available in your package manager, I believe it was `libncurses-dev` for Ubuntu-based Linux distros), clone the repo, cd into the `src` directory, and run `make`. As long as you have the correct Ncurses library installed, you should be able to run the application from here with `./tui`.
+If you want to build the program, install the Ncurses library (should be available in your package manager, I believe it was `libncurses-dev` for Ubuntu-based Linux distros).
+
+After cloning the repo:
+
+`cd DundTools/src`
+To compile just the TUI application: `make tui`
+To compile just the CLI dice roller: `make rolldice`
+To compile both: `make all` (Just `make` also works if you're lazy)
+
+As long as you have the correct Ncurses library installed, you should be able to compile and run the applications from here with `./tui` and `./rolldice`.
 
 If it doesn't work, I'm afraid I'm not going to be a whole lot of help.
 
@@ -38,9 +47,12 @@ A GUI version of the app may also be a consideration for the future. But for now
 # RollDice
 RollDice is a standalone CLI dice rolling simulator.
 
-**(Currently requires `tui` to be compiled before this will compile. I have no idea how to fix that right now, but I'll look into it later)**
+After cloning the repo, use the following commands:
 
-Compile it with `make` and run it with:
+`cd DundTools/src`
+`make rolldice`
+
+Run the program with:
 
 `./rolldice <number of dice> <type of dice> <mod>`
 
