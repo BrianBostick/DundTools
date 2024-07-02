@@ -1,10 +1,11 @@
 #include "../include/diceroll.h"
 #include <iostream>
-#include <sstream>
+#include <string>
+#include <stdlib.h>
 
 int main( int argc, char* argv[])
 {
-    if (argc <= 2)
+    if (argc < 2)
     {
         if (argv[0])
             std::cout << "Usage: " << argv[0] << " <number of dice> <number of sides of dice> <mod> (-mod if negative)" << '\n';
@@ -13,24 +14,18 @@ int main( int argc, char* argv[])
 
         return 1;
     }
-
-    std::stringstream convert1{ argv[1] };
-    std::stringstream convert2{ argv[2] };
-    std::stringstream convert3{ argv[3] };
-    int num_mod{};
-    if (!argv[3])
-       num_mod = 0;
-    int num_dice{};
-    int num_sides{};
-
-    if (!(convert1 >> num_dice))
-        num_dice = 0;
-    if (!(convert2 >> num_sides))
-        num_sides = 0;
-    if (!(convert3 >> num_mod))
+    
+    int num_mod;
+    if (argv[3])
+    {
+        num_mod = atoi(argv[3]);
+    } else {
         num_mod = 0;
+    }
+    int num_sides = atoi(argv[2]);
+    int num_dice = atoi(argv[1]);
 
-    int roll{ diceRoll(num_dice, num_sides) };
+    int roll = diceRoll(num_dice, num_sides);
     int total{ roll + num_mod };
 
     if (num_sides == 20 && roll == 20)
