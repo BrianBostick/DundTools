@@ -1,11 +1,20 @@
 #include "../include/character_creator.h"
 #include "../include/diceroll.h"
 #include "../include/logos.h"
+#include "../include/stats.h"
 #include <ncurses.h>
 #include <string>
 
+
+std::string plusStat1;
+std::string plusStat2;
+
+std::string original_stat_list[6] = {"Str", "Dex", "Con",
+                                    "Int", "Wis", "Cha"};
+
 void genCCWindow()
 {
+
     initscr();
     noecho();
     cbreak();
@@ -36,6 +45,8 @@ void genCCWindow()
     std::string char_race;
     bool has_sub;
     std::string char_sub;
+    //std::string plusStat1;
+    //std::string plusStat2;
 
     while(1)
     {
@@ -96,26 +107,70 @@ void genCCWindow()
             char_class = getCharClass(centerwin, centerwin_x_max);
             char_race = getCharRace(centerwin, centerwin_x_max);
             has_sub = checkForSub(char_race);
-            if (has_sub == true)
+            if (char_race == "Half-Elf")
+            {
+                plusStat1 = halfElf(centerwin, centerwin_x_max);
+                plusStat2 = halfElf(centerwin, centerwin_x_max);
+            } else if (has_sub == true) {
                 char_sub = getCharSubRace(centerwin, centerwin_x_max, char_race);
-
+            }
         }
         wclear(centerwin);
         box(centerwin, 0, 0);
+        // Character object & base stats set to 0
+        Character New_Character(0, 0, 0, 0, 0, 0);
+        if ((char_race == "Dragonborn") | (has_sub == false))
+        {
+            New_Character = Character(getStrNoSub(char_race), getDexNoSub(char_race),
+                                      getConNoSub(char_race), getIntNoSub(char_race),
+                                      getWisNoSub(char_race), getChaNoSub(char_race));
+        } else if (char_race != "Dragonborn" && has_sub == true) {
+            New_Character = Character(getStrSub(char_sub), getDexSub(char_sub),
+                                      getConSub(char_sub), getIntSub(char_sub),
+                                      getWisSub(char_sub), getChaSub(char_sub));            
+        }
         // For debugging purposes
-        if (has_sub == true)
+        if (char_race == "Half-Elf")
         {
             mvwprintw(centerwin, centerwin_y_max - 7, 2, "Player Name: %s", player_name.c_str());
             mvwprintw(centerwin, centerwin_y_max - 6, 2, "Character Name: %s", char_name.c_str());
             mvwprintw(centerwin, centerwin_y_max - 5, 2, "Class: %s",  char_class.c_str());
             mvwprintw(centerwin, centerwin_y_max - 4, 2, "Race: %s", char_race.c_str());
             mvwprintw(centerwin, centerwin_y_max - 3, 2, "Has Sub?: %d", has_sub);
+            mvwprintw(centerwin, centerwin_y_max - 2, 2, "+1's: %s & %s", plusStat1.c_str(), plusStat2.c_str());
+
+            mvwprintw(centerwin, centerwin_y_max - 7, 30, "Str: %d", New_Character.str_base);
+            mvwprintw(centerwin, centerwin_y_max - 6, 30, "Dex: %d", New_Character.dex_base);
+            mvwprintw(centerwin, centerwin_y_max - 5, 30, "Con: %d", New_Character.con_base);
+            mvwprintw(centerwin, centerwin_y_max - 4, 30, "Int: %d", New_Character.int_base);
+            mvwprintw(centerwin, centerwin_y_max - 3, 30, "Wis: %d", New_Character.wis_base);
+            mvwprintw(centerwin, centerwin_y_max - 2, 30, "Cha: %d", New_Character.cha_base);
+        } else if (has_sub == true) {
+            mvwprintw(centerwin, centerwin_y_max - 7, 2, "Player Name: %s", player_name.c_str());
+            mvwprintw(centerwin, centerwin_y_max - 6, 2, "Character Name: %s", char_name.c_str());
+            mvwprintw(centerwin, centerwin_y_max - 5, 2, "Class: %s",  char_class.c_str());
+            mvwprintw(centerwin, centerwin_y_max - 4, 2, "Race: %s", char_race.c_str());
+            mvwprintw(centerwin, centerwin_y_max - 3, 2, "Has Sub?: %d", has_sub);
             mvwprintw(centerwin, centerwin_y_max - 2, 2, "Sub-Race: %s", char_sub.c_str());
+
+            mvwprintw(centerwin, centerwin_y_max - 7, 30, "Str: %d", New_Character.str_base);
+            mvwprintw(centerwin, centerwin_y_max - 6, 30, "Dex: %d", New_Character.dex_base);
+            mvwprintw(centerwin, centerwin_y_max - 5, 30, "Con: %d", New_Character.con_base);
+            mvwprintw(centerwin, centerwin_y_max - 4, 30, "Int: %d", New_Character.int_base);
+            mvwprintw(centerwin, centerwin_y_max - 3, 30, "Wis: %d", New_Character.wis_base);
+            mvwprintw(centerwin, centerwin_y_max - 2, 30, "Cha: %d", New_Character.cha_base);
         } else {
             mvwprintw(centerwin, centerwin_y_max - 5, 2, "Player Name: %s", player_name.c_str());
             mvwprintw(centerwin, centerwin_y_max - 4, 2, "Character Name: %s", char_name.c_str());
             mvwprintw(centerwin, centerwin_y_max - 3, 2, "Class: %s",  char_class.c_str());
             mvwprintw(centerwin, centerwin_y_max - 2, 2, "Race: %s", char_race.c_str());
+
+            mvwprintw(centerwin, centerwin_y_max - 7, 30, "Str: %d", New_Character.str_base);
+            mvwprintw(centerwin, centerwin_y_max - 6, 30, "Dex: %d", New_Character.dex_base);
+            mvwprintw(centerwin, centerwin_y_max - 5, 30, "Con: %d", New_Character.con_base);
+            mvwprintw(centerwin, centerwin_y_max - 4, 30, "Int: %d", New_Character.int_base);
+            mvwprintw(centerwin, centerwin_y_max - 3, 30, "Wis: %d", New_Character.wis_base);
+            mvwprintw(centerwin, centerwin_y_max - 2, 30, "Cha: %d", New_Character.cha_base);
         }
            
         wrefresh(centerwin);
@@ -130,7 +185,6 @@ std::string getPlayerName(WINDOW *win, int y_max, int x_max)
     wclear(win);
     box(win, 0, 0);
     mvwprintw(win, y_max / 2, x_max / 2 - 15, "Enter Your (the Player's) name:");
-
     int mainwin_y_max, mainwin_x_max;
     getmaxyx(stdscr, mainwin_y_max, mainwin_x_max);
     WINDOW *textwin = newwin(3, 20, mainwin_y_max / 2 + 1, mainwin_x_max / 2 - 12);
@@ -371,22 +425,30 @@ bool checkForSub(std::string race)
     std::string race_list[9] = {"Dragonborn", "Dwarf", "Elf", "Gnome", "Half-Elf",
                              "Half-Orc", "Halfling", "Human", "Tiefling"};
     bool has_sub[9] = {true, true, true, true, true, false, true, true, false};
+    bool answer;
 
     for (int i = 0; i < 9; ++i)
     {
         if (race == race_list[i])
-            return has_sub[i];
+        {
+            answer = has_sub[i];
+            break;
+        }
     }
+    return answer;
 }
 
 std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
 {
+    std::string stat_list[6] = {"Str", "Dex", "Con",
+                            "Int", "Wis", "Cha"};
+
     std::string race_list[9] = {"Dragonborn", "Dwarf", "Elf", "Gnome", "Half-Elf",
-                             "Halfling", "Human"};
-    int race_index;
+                             "Halfling", "Human", "Tiefling"};
+    int race_index = 0;
     std::string chosen_sub;
 
-    std::string stats_list[6] = {"Str", "Dex", "Con", "Int", "Wis", "Cha"};
+    //std::string stats_list[6] = {"Str", "Dex", "Con", "Int", "Wis", "Cha"};
 
     std::string db_subs[10] = {"Black", "Blue", "Brass", "Bronze", "Copper",
                                "Gold", "Green", "Red", "Silver", "White"};
@@ -417,17 +479,20 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
     std::string human_sub_desc[2] = {"+1 to all stats",
                                      "+1 to 2 stats of player choice, 1 feat"};
 
+    ///////// The source of my problems?????
     int index = 0;
     while(1)
     {
-        if (race != race_list[index])
+        if (race == race_list[index])
         {
-            ++index;
-        } else {
             race_index = index;
             break;
+        } else {
+            ++index;
         }
     }
+    /////////////
+    // Maybe a for loop will fix it?
 
 
     int choice;
@@ -696,8 +761,8 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
                 }
             }
         case 4:
-            wclear(win);
-            box(win, 0, 0);
+            // Moved this to it's own function because it was giving me an anyeurysm
+            end = true;
             break;
         case 5:
             wclear(win);
@@ -837,4 +902,89 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
     endwin();
 
     return chosen_sub;
+}
+
+std::string halfElf(WINDOW *win, int x_max)
+{
+    bool end = false;
+    std::string plus_stat;
+    int highlight = 0;
+    int choice;
+    std::string stat_list[6] = {"Str", "Dex", "Con", "Int", "Wis", "Cha"};
+
+    int length = sizeof(stat_list)/sizeof(stat_list[0]);
+
+    wclear(win);
+    box(win, 0, 0);
+    while(end == false)
+    {
+        for (int i = 0; i < length; ++i)
+        {
+            if (i == highlight)
+            {
+                wattron(win, A_REVERSE);
+            }
+            mvwprintw(win, i + 5, 1, "%s", stat_list[i].c_str());
+            wattroff(win, A_REVERSE);
+            mvwprintw(win, 1, x_max / 2 - 14, "Choose a Stat to Add +1 to:");
+        }
+
+        choice = wgetch(win);
+
+        switch(choice)
+        {
+            case KEY_UP:
+                highlight--;
+                if (highlight == -1)
+                    highlight = length;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case 107:
+                highlight --;
+                if (highlight == -1)
+                    highlight = length;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case KEY_DOWN:
+                highlight++;
+                if (highlight == length)
+                    highlight = 0;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case 106:
+                highlight++;
+                if (highlight == length)
+                    highlight = 0;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            default:
+                break;
+        }
+        if (choice == 113)
+            break;
+        if (choice == 10)
+        {
+            // This is the part that was killing me.
+            plus_stat = stat_list[highlight].c_str();
+            // Take the selected stat out of the stat list,
+            // that way it can't be chosen twice
+            for (int i = highlight; i <= 4; i++)
+            {
+                stat_list[i] = stat_list[i + 1];
+            }
+            --length;
+            end = true;
+            break;
+        }
+        wrefresh(win);
+    }
+    return plus_stat;
 }
