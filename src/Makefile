@@ -1,4 +1,4 @@
-OBJS = tui.o diceroll.o ascii_nums.o character_creator.o logos.o
+OBJS = tui.o diceroll.o ascii_nums.o character_creator.o logos.o stats.o
 CFLAGS = -Wall -g
 CC = g++
 INCLUDE =
@@ -9,6 +9,5 @@ tui: ${OBJS}
 
 clean:
 	rm *.o tui
-
 .cpp.o:
 	${CC} ${CFLAGS} ${INCLUDES} -c $<
