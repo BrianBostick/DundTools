@@ -1,13 +1,20 @@
-OBJS = tui.o diceroll.o ascii_nums.o character_creator.o logos.o stats.o
+TUI-OBJS = tui.o diceroll.o ascii_nums.o character_creator.o logos.o stats.o
+DR-OBJS = rolldice.o diceroll.o
 CFLAGS = -Wall -g
 CC = g++
 INCLUDE =
 LIBS = -lncurses
 
-tui: ${OBJS}
-	${CC} ${CFLAGS} ${INCLUDES} -o $@ ${OBJS} ${LIBS}
+all: tui rolldice
+
+tui: ${TUI-OBJS}
+	${CC} ${CFLAGS} ${INCLUDES} -o $@ ${TUI-OBJS} ${LIBS}
+
+rolldice: ${DR-OBJS}
+	${CC} ${CFLAGS} ${INCLUDES} -o $@ ${DR-OBJS}
 
 clean:
-	rm *.o tui
+	rm *.o tui rolldice
+
 .cpp.o:
 	${CC} ${CFLAGS} ${INCLUDES} -c $<
