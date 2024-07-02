@@ -1,20 +1,16 @@
-#include "../include/diceroll.h"
 #include "../include/ascii_nums.h"
 #include "../include/character_creator.h"
+#include "../include/diceroll.h"
+#include "../include/logos.h"
+#include "../include/stats.h"
 #include <ncurses.h>
 #include <inttypes.h>
 #include <string>
 
 
-// print an ASCII art logo & version info
-void printLogo(WINDOW *, int, int);
-void printDRLogo(WINDOW *, int, int);
-void printCCLogo(WINDOW *, int, int);
-
 // program functions
 void genHomeWindow(WINDOW *, int, int, WINDOW *, WINDOW *, WINDOW *);
 void genDicerollWindow();
-void genCCWindow();
 
 // main menu functions
 // the windows will have already been created, this is just doing things like creating the boxes and refreshing the content
@@ -29,15 +25,7 @@ int getTypeDice(int, int);
 int getDiceMod(int, int);
 int rollDice(int, int, int);
 
-// character creator
-std::string getPlayerName(WINDOW *, int, int);
-std::string getCharName(WINDOW *, int, int);
-std::string getCharClass(WINDOW *, int);
-std::string getCharRace(WINDOW *, int);
-bool checkForSub(std::string);
-std::string getCharSubRace(WINDOW *, int, std::string);
-
-int main(int argc, char ** argv)
+int main()
 {
     // starts ncurses
     initscr();
@@ -81,16 +69,14 @@ int main(int argc, char ** argv)
 
 
     // **** MAIN MENU ****
-    int menuwin_y_max, menuwin_x_max;
+    int menuwin_x_max;
     WINDOW *menuwin = newwin(bottomwin_y_max - 2, (bottomwin_x_max / 2) - 2, bottomwin_y_max + 4, 2);
     box(menuwin, 0, 0);
-    getmaxyx(menuwin, menuwin_y_max, menuwin_x_max);
+    menuwin_x_max = getmaxx(menuwin);
     keypad(menuwin, true);
 
-    int descwin_y_max, descwin_x_max;
     WINDOW *descwin = newwin(bottomwin_y_max - 2, (bottomwin_x_max / 2) - 2, bottomwin_y_max + 4, menuwin_x_max + 4);
     box(descwin, 0, 0);
-    getmaxyx(descwin, descwin_y_max, descwin_x_max);
     
 
     std::string choices[2] = {"DiceRoll", "Character Creator"};
