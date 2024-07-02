@@ -38,13 +38,10 @@ A GUI version of the app may also be a consideration for the future. But for now
 # RollDice
 RollDice is a standalone CLI dice rolling simulator.
 
+**(Currently requires `tui` to be compiled before this will compile. I have no idea how to fix that right now, but I'll look into it later)**
+
 Compile it with `make` and run it with:
 
 `./rolldice <number of dice> <type of dice> <mod>`
 
 (Use a negative number to subtract the modifier)
-
-I wrote this when I was *first starting* to learn C++, so it's pretty rough. I plan on rewriting it soon now that I've learned a bit more.
-
-As of right now, it throws an error if you don't include all 3 arguments.
-
