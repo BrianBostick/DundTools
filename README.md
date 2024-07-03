@@ -1,6 +1,13 @@
 # DundTools
 A collection of TUI and CLI tools for D&D 5e games.
 
+<hr>
+**!! MAJOR REVISIONS NEEDED !!**
+I've noticed that I'm having a hard time figuring out how to get functions to return the informaiton I need, and I've realized it's because I'm making too many nested functions.
+
+I'm going to redo **most** of the application so I'm returning values to tui.cpp. I've been spreading things out too much and it's starting to make a tangled mess.
+<hr>
+
 **This has only been tested on Linux systems. Specifically Linux Mint 21.3, Arch Linux, and a Raspberry Pi OS 32-bit. It should *in theory* work on MacOS, but I have no way of testing it on Windows.**
 
 The only dependency is Ncurses.
