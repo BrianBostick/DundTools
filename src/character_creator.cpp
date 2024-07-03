@@ -6,11 +6,8 @@
 #include <string>
 
 
-std::string plusStat1;
-std::string plusStat2;
-
-std::string original_stat_list[6] = {"Str", "Dex", "Con",
-                                    "Int", "Wis", "Cha"};
+int plusStat1;
+int plusStat2;
 
 void genCCWindow()
 {
@@ -45,8 +42,6 @@ void genCCWindow()
     std::string char_race;
     bool has_sub;
     std::string char_sub;
-    //std::string plusStat1;
-    //std::string plusStat2;
 
     while(1)
     {
@@ -109,8 +104,19 @@ void genCCWindow()
             has_sub = checkForSub(char_race);
             if (char_race == "Half-Elf")
             {
-                plusStat1 = halfElf(centerwin, centerwin_x_max);
-                plusStat2 = halfElf(centerwin, centerwin_x_max);
+                std::string stat_list[5] = {"Str", "Dex", "Con", "Int", "Wis"};
+                int length = 4;
+                plusStat1 = halfElf(centerwin, centerwin_x_max, stat_list, length);
+                for (int i = plusStat1; i < 4; i++)
+                {
+                    stat_list[i] = stat_list[i + 1];
+                }
+                length = 3;
+                plusStat2 = halfElf(centerwin, centerwin_x_max, stat_list, length) + 1;
+                // If you select Dex as plusStat1 and Str as plusStat2, 2 points get
+                // added to Dex. The following conditional fixes that
+                if (plusStat2 == 1 && plusStat1 == 1)
+                    plusStat2 = 0;
             } else if (has_sub == true) {
                 char_sub = getCharSubRace(centerwin, centerwin_x_max, char_race);
             }
@@ -119,16 +125,66 @@ void genCCWindow()
         box(centerwin, 0, 0);
         // Character object & base stats set to 0
         Character New_Character(0, 0, 0, 0, 0, 0);
-        if ((char_race == "Dragonborn") | (has_sub == false))
+        if ((char_race == "Dragonborn") || (has_sub == false))
         {
             New_Character = Character(getStrNoSub(char_race), getDexNoSub(char_race),
                                       getConNoSub(char_race), getIntNoSub(char_race),
                                       getWisNoSub(char_race), getChaNoSub(char_race));
+        } else if (char_race == "Half-Elf") {
+            // I wanted to make this prettier with a function call, but this
+            // method is *infinitely* more simple for me
+            switch(plusStat1)
+            {
+            case 0:
+                New_Character.str_base += 1;
+                break;
+            case 1:
+                New_Character.dex_base += 1;
+                break;
+            case 2:
+                New_Character.con_base += 1;
+                break;
+            case 3:
+                New_Character.int_base += 1;
+                break;
+            case 4:
+                New_Character.wis_base += 1;
+                break;
+            default:
+                break;
+            }
+
+            switch(plusStat2)
+            {
+            case 0:
+                New_Character.str_base += 1;
+                break;
+            case 1:
+                New_Character.dex_base += 1;
+                break;
+            case 2:
+                New_Character.con_base += 1;
+                break;
+            case 3:
+                New_Character.int_base += 1;
+                break;
+            case 4:
+                New_Character.wis_base += 1;
+                break;
+            default:
+                break;
+            }
+            New_Character.cha_base += 2;
         } else if (char_race != "Dragonborn" && has_sub == true) {
             New_Character = Character(getStrSub(char_sub), getDexSub(char_sub),
                                       getConSub(char_sub), getIntSub(char_sub),
-                                      getWisSub(char_sub), getChaSub(char_sub));            
+                                      getWisSub(char_sub), getChaSub(char_sub));
         }
+        genStatsWindow(centerwin, centerwin_x_max, New_Character, char_class);
+        wclear(centerwin);
+        box(centerwin, 0, 0);
+        wrefresh(centerwin);
+
         // For debugging purposes
         if (char_race == "Half-Elf")
         {
@@ -137,7 +193,7 @@ void genCCWindow()
             mvwprintw(centerwin, centerwin_y_max - 5, 2, "Class: %s",  char_class.c_str());
             mvwprintw(centerwin, centerwin_y_max - 4, 2, "Race: %s", char_race.c_str());
             mvwprintw(centerwin, centerwin_y_max - 3, 2, "Has Sub?: %d", has_sub);
-            mvwprintw(centerwin, centerwin_y_max - 2, 2, "+1's: %s & %s", plusStat1.c_str(), plusStat2.c_str());
+            mvwprintw(centerwin, centerwin_y_max - 2, 2, "+1's: %d & %d", plusStat1, plusStat2);
 
             mvwprintw(centerwin, centerwin_y_max - 7, 30, "Str: %d", New_Character.str_base);
             mvwprintw(centerwin, centerwin_y_max - 6, 30, "Dex: %d", New_Character.dex_base);
@@ -904,21 +960,18 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
     return chosen_sub;
 }
 
-std::string halfElf(WINDOW *win, int x_max)
+int halfElf(WINDOW *win, int x_max, std::string* stat_list, int length)
 {
-    bool end = false;
-    std::string plus_stat;
+    int plus_stat;
     int highlight = 0;
     int choice;
-    std::string stat_list[6] = {"Str", "Dex", "Con", "Int", "Wis", "Cha"};
 
-    int length = sizeof(stat_list)/sizeof(stat_list[0]);
 
     wclear(win);
     box(win, 0, 0);
-    while(end == false)
+    while(1)
     {
-        for (int i = 0; i < length; ++i)
+        for (int i = 0; i <= length; ++i)
         {
             if (i == highlight)
             {
@@ -942,7 +995,7 @@ std::string halfElf(WINDOW *win, int x_max)
                 wrefresh(win);
                 break;
             case 107:
-                highlight --;
+                highlight--;
                 if (highlight == -1)
                     highlight = length;
                 wclear(win);
@@ -972,19 +1025,90 @@ std::string halfElf(WINDOW *win, int x_max)
             break;
         if (choice == 10)
         {
-            // This is the part that was killing me.
-            plus_stat = stat_list[highlight].c_str();
-            // Take the selected stat out of the stat list,
-            // that way it can't be chosen twice
-            for (int i = highlight; i <= 4; i++)
-            {
-                stat_list[i] = stat_list[i + 1];
-            }
-            --length;
-            end = true;
+            plus_stat = highlight;
             break;
         }
         wrefresh(win);
     }
     return plus_stat;
+}
+
+
+void genStatsWindow(WINDOW *win, int x_max, Character character, std::string char_class)
+{
+    int highlight = 0;
+    int choice;
+    std::string options[3] = {"Standard Array", "Roll", "Manual Input"};
+
+    wclear(win);
+    box(win, 0, 0);
+    while(1)
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+            if (i == highlight)
+            {
+                wattron(win, A_REVERSE);
+            }
+            mvwprintw(win, i + 5, 1, "%s", options[i].c_str());
+            wattroff(win, A_REVERSE);
+            mvwprintw(win, 1, x_max / 2 - 18, "How do you want to apply your stats?");
+        }
+
+        choice = wgetch(win);
+
+        switch(choice)
+        {
+            case KEY_UP:
+                highlight--;
+                if (highlight == -1)
+                    highlight = 2;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case 107:
+                highlight--;
+                if (highlight == -1)
+                    highlight = 2;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case KEY_DOWN:
+                highlight++;
+                if (highlight == 3)
+                    highlight = 0;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case 106:
+                highlight++;
+                if (highlight == 3)
+                    highlight = 0;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            default:
+                break;
+        }
+        if (choice == 113)
+            break;
+        if (choice == 10)
+        {
+            switch(highlight)
+            {
+                case 0:
+                    stdArray1(win, x_max, char_class);
+                    wclear(win);
+                    box(win, 0, 0);
+                    wrefresh(win);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 }

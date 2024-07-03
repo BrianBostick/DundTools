@@ -3,6 +3,7 @@
 
 #include "diceroll.h"
 #include "logos.h"
+#include <ncurses.h>
 #include <string>
 
 class StatMods
@@ -42,5 +43,6 @@ int getWisNoSub(std::string);
 int getWisSub(std::string);
 int getChaNoSub(std::string);
 int getChaSub(std::string);
+void stdArray1(WINDOW *, int, std::string);
 
 #endif

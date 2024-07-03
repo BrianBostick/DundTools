@@ -2,6 +2,7 @@
 #include "../include/diceroll.h"
 #include "../include/logos.h"
 #include "../include/stats.h"
+#include <ncurses.h>
 #include <string>
 
 
@@ -36,6 +37,7 @@ int getStrSub(std::string char_sub)
     int index = 0;
     int mod;
     int i = 0;
+
     
     while(1)
     {
@@ -422,7 +424,7 @@ int getChaSub(std::string char_sub)
             ++i;
         }
     }
-    
+
     switch(index)
     {
         case 0:
@@ -463,4 +465,100 @@ int getChaSub(std::string char_sub)
     }
 
     return mod;
+}
+
+
+void stdArray1(WINDOW *win, int x_max, std::string char_class)
+{
+
+    keypad(win, true);
+
+    std::string class_list[12] = {"Barbarian", "Bard", "Cleric", "Druid",
+                                  "Fighter", "Monk", "Paladin", "Ranger",
+                                  "Rogue", "Sorcerer", "Warlock", "Wizard"};
+    std::string class_suggestions[12] = {"Str", "Cha", "Wis", "Wis", "Str", "Dex",
+                                         "Cha", "Dex", "Dex", "Cha", "Cha", "Int"};
+    int suggest_index;
+    int highlight = 0;
+    int choice;
+
+    for (int i = 0; i < 12; ++i)
+    {
+        if (char_class == class_list[i])
+        {
+            suggest_index = i;
+            break;
+        } else {
+            ++i;
+        }
+    }
+    
+    wclear(win);
+    box(win, 0, 0);
+    wrefresh(win);
+
+    while(1)
+    {
+        std::string stat_list[6] = {"Str", "Dex", "Con", "Int", "Wis", "Cha"};
+        int length = 5;
+        for (int i = 0; i < 6; ++i)
+        {
+            if (i == highlight)
+            {
+                wattron(win, A_REVERSE);
+            }
+            mvwprintw(win, i + 5, 1, "%s", stat_list[i].c_str());
+            wattroff(win, A_REVERSE);
+            mvwprintw(win, 1, x_max / 2 - 7, "Standard Array");
+            mvwprintw(win, 2, x_max / 2 - 14, "Select your first stat (15)");
+            mvwprintw(win, 3, x_max / 2 - 13, "Suggestion for class: %s", class_suggestions[suggest_index].c_str());
+        }
+
+        choice = wgetch(win);
+
+        switch(choice)
+        {
+            case KEY_UP:
+                highlight--;
+                if (highlight == -1)
+                    highlight = length;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case 107:
+                highlight--;
+                if (highlight == -1)
+                    highlight = length;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case KEY_DOWN:
+                highlight++;
+                if (highlight == length + 1)
+                    highlight = 0;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            case 106:
+                highlight++;
+                if (highlight == length + 1)
+                    highlight = 0;
+                wclear(win);
+                box(win, 0, 0);
+                wrefresh(win);
+                break;
+            default:
+                break;
+        }
+        if (choice == 113)
+            break;
+        if (choice == 10)
+            break;
+        wclear(win);
+        box(win, 0, 0);
+        wrefresh(win);
+    }
 }

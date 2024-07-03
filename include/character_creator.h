@@ -32,6 +32,8 @@ std::string getCharClass(WINDOW *, int);
 std::string getCharRace(WINDOW *, int);
 bool checkForSub(std::string);
 std::string getCharSubRace(WINDOW *, int, std::string);
-std::string halfElf(WINDOW *, int);
+int halfElf(WINDOW *, int, std::string *, int);
+void genStatsWindow(WINDOW *, int, Character, std::string);
+
 
 #endif
