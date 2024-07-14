@@ -43,6 +43,9 @@ int getWisNoSub(std::string);
 int getWisSub(std::string);
 int getChaNoSub(std::string);
 int getChaSub(std::string);
-void stdArray1(WINDOW *, int, std::string);
+Character stdArray(WINDOW *, int, std::string, Character);
+Character rollStats(WINDOW *, int, Character, std::string);
+Character manualStats(WINDOW *, int, Character);
+int getStatInput(WINDOW *, int);
 
 #endif

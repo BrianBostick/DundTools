@@ -6,241 +6,12 @@
 #include <string>
 
 
-int plusStat1;
-int plusStat2;
-
-void genCCWindow()
-{
-
-    initscr();
-    noecho();
-    cbreak();
-    curs_set(0);
-
-    int mainwin_y_max, mainwin_x_max;
-    getmaxyx(stdscr, mainwin_y_max, mainwin_x_max);
-    box(stdscr, 0, 0);
-
-    printLogo(stdscr, 2, 50);
-    printCCLogo(stdscr, mainwin_y_max, mainwin_x_max);
-    refresh();
-
-    WINDOW *centerwin = newwin(mainwin_y_max / 2, mainwin_x_max / 2, mainwin_y_max / 4, mainwin_x_max / 4);
-    int centerwin_y_max, centerwin_x_max;
-    getmaxyx(centerwin, centerwin_y_max, centerwin_x_max);
-    box(centerwin, 0, 0);
-    wrefresh(centerwin);
-    keypad(centerwin, true);
-
-    std::string choices[1] = {"New Character"};
-    int choice;
-    int highlight = 0;
-
-    std::string player_name;
-    std::string char_name;
-    std::string char_class;
-    std::string char_race;
-    bool has_sub;
-    std::string char_sub;
-
-    while(1)
-    {
-        for (int i = 0; i < 1; i++)
-        {
-            if (i == highlight)
-            {
-                wattron(centerwin, A_REVERSE);
-            }
-            mvwprintw(centerwin, i + 1, 1, "%s", choices[i].c_str());
-            wattroff(centerwin, A_REVERSE);
-        }
-
-        choice = wgetch(centerwin);
-
-        switch(choice)
-        {
-            case KEY_UP:
-                highlight--;
-                if (highlight == -1)
-                    highlight = 0;
-                wclear(centerwin);
-                box(centerwin, 0, 0);
-                wrefresh(centerwin);
-                break;
-            case 107:
-                highlight--;
-                if (highlight == -1)
-                    highlight = 0;
-                wclear(centerwin);
-                box(centerwin, 0, 0);
-                wrefresh(centerwin);
-                break;
-            case KEY_DOWN:
-                highlight++;
-                if (highlight == 1)
-                    highlight = 0;
-                wclear(centerwin);
-                box(centerwin, 0, 0);
-                wrefresh(centerwin);
-                break;
-            case 106:
-                highlight++;
-                if (highlight == 1)
-                    highlight = 0;
-                wclear(centerwin);
-                box(centerwin, 0, 0);
-                wrefresh(centerwin);
-                break;
-            default:
-                break;
-        }
-        if (choice == 113)
-            break;
-        if (choice == 10 && highlight == 0) {
-            player_name = getPlayerName(centerwin, centerwin_y_max, centerwin_x_max);
-            char_name = getCharName(centerwin, centerwin_y_max, centerwin_x_max);
-            char_class = getCharClass(centerwin, centerwin_x_max);
-            char_race = getCharRace(centerwin, centerwin_x_max);
-            has_sub = checkForSub(char_race);
-            if (char_race == "Half-Elf")
-            {
-                std::string stat_list[5] = {"Str", "Dex", "Con", "Int", "Wis"};
-                int length = 4;
-                plusStat1 = halfElf(centerwin, centerwin_x_max, stat_list, length);
-                for (int i = plusStat1; i < 4; i++)
-                {
-                    stat_list[i] = stat_list[i + 1];
-                }
-                length = 3;
-                plusStat2 = halfElf(centerwin, centerwin_x_max, stat_list, length) + 1;
-                // If you select Dex as plusStat1 and Str as plusStat2, 2 points get
-                // added to Dex. The following conditional fixes that
-                if (plusStat2 == 1 && plusStat1 == 1)
-                    plusStat2 = 0;
-            } else if (has_sub == true) {
-                char_sub = getCharSubRace(centerwin, centerwin_x_max, char_race);
-            }
-        }
-        wclear(centerwin);
-        box(centerwin, 0, 0);
-        // Character object & base stats set to 0
-        Character New_Character(0, 0, 0, 0, 0, 0);
-        if ((char_race == "Dragonborn") || (has_sub == false))
-        {
-            New_Character = Character(getStrNoSub(char_race), getDexNoSub(char_race),
-                                      getConNoSub(char_race), getIntNoSub(char_race),
-                                      getWisNoSub(char_race), getChaNoSub(char_race));
-        } else if (char_race == "Half-Elf") {
-            // I wanted to make this prettier with a function call, but this
-            // method is *infinitely* more simple for me
-            switch(plusStat1)
-            {
-            case 0:
-                New_Character.str_base += 1;
-                break;
-            case 1:
-                New_Character.dex_base += 1;
-                break;
-            case 2:
-                New_Character.con_base += 1;
-                break;
-            case 3:
-                New_Character.int_base += 1;
-                break;
-            case 4:
-                New_Character.wis_base += 1;
-                break;
-            default:
-                break;
-            }
-
-            switch(plusStat2)
-            {
-            case 0:
-                New_Character.str_base += 1;
-                break;
-            case 1:
-                New_Character.dex_base += 1;
-                break;
-            case 2:
-                New_Character.con_base += 1;
-                break;
-            case 3:
-                New_Character.int_base += 1;
-                break;
-            case 4:
-                New_Character.wis_base += 1;
-                break;
-            default:
-                break;
-            }
-            New_Character.cha_base += 2;
-        } else if (char_race != "Dragonborn" && has_sub == true) {
-            New_Character = Character(getStrSub(char_sub), getDexSub(char_sub),
-                                      getConSub(char_sub), getIntSub(char_sub),
-                                      getWisSub(char_sub), getChaSub(char_sub));
-        }
-        genStatsWindow(centerwin, centerwin_x_max, New_Character, char_class);
-        wclear(centerwin);
-        box(centerwin, 0, 0);
-        wrefresh(centerwin);
-
-        // For debugging purposes
-        if (char_race == "Half-Elf")
-        {
-            mvwprintw(centerwin, centerwin_y_max - 7, 2, "Player Name: %s", player_name.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 6, 2, "Character Name: %s", char_name.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 5, 2, "Class: %s",  char_class.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 4, 2, "Race: %s", char_race.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 3, 2, "Has Sub?: %d", has_sub);
-            mvwprintw(centerwin, centerwin_y_max - 2, 2, "+1's: %d & %d", plusStat1, plusStat2);
-
-            mvwprintw(centerwin, centerwin_y_max - 7, 30, "Str: %d", New_Character.str_base);
-            mvwprintw(centerwin, centerwin_y_max - 6, 30, "Dex: %d", New_Character.dex_base);
-            mvwprintw(centerwin, centerwin_y_max - 5, 30, "Con: %d", New_Character.con_base);
-            mvwprintw(centerwin, centerwin_y_max - 4, 30, "Int: %d", New_Character.int_base);
-            mvwprintw(centerwin, centerwin_y_max - 3, 30, "Wis: %d", New_Character.wis_base);
-            mvwprintw(centerwin, centerwin_y_max - 2, 30, "Cha: %d", New_Character.cha_base);
-        } else if (has_sub == true) {
-            mvwprintw(centerwin, centerwin_y_max - 7, 2, "Player Name: %s", player_name.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 6, 2, "Character Name: %s", char_name.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 5, 2, "Class: %s",  char_class.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 4, 2, "Race: %s", char_race.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 3, 2, "Has Sub?: %d", has_sub);
-            mvwprintw(centerwin, centerwin_y_max - 2, 2, "Sub-Race: %s", char_sub.c_str());
-
-            mvwprintw(centerwin, centerwin_y_max - 7, 30, "Str: %d", New_Character.str_base);
-            mvwprintw(centerwin, centerwin_y_max - 6, 30, "Dex: %d", New_Character.dex_base);
-            mvwprintw(centerwin, centerwin_y_max - 5, 30, "Con: %d", New_Character.con_base);
-            mvwprintw(centerwin, centerwin_y_max - 4, 30, "Int: %d", New_Character.int_base);
-            mvwprintw(centerwin, centerwin_y_max - 3, 30, "Wis: %d", New_Character.wis_base);
-            mvwprintw(centerwin, centerwin_y_max - 2, 30, "Cha: %d", New_Character.cha_base);
-        } else {
-            mvwprintw(centerwin, centerwin_y_max - 5, 2, "Player Name: %s", player_name.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 4, 2, "Character Name: %s", char_name.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 3, 2, "Class: %s",  char_class.c_str());
-            mvwprintw(centerwin, centerwin_y_max - 2, 2, "Race: %s", char_race.c_str());
-
-            mvwprintw(centerwin, centerwin_y_max - 7, 30, "Str: %d", New_Character.str_base);
-            mvwprintw(centerwin, centerwin_y_max - 6, 30, "Dex: %d", New_Character.dex_base);
-            mvwprintw(centerwin, centerwin_y_max - 5, 30, "Con: %d", New_Character.con_base);
-            mvwprintw(centerwin, centerwin_y_max - 4, 30, "Int: %d", New_Character.int_base);
-            mvwprintw(centerwin, centerwin_y_max - 3, 30, "Wis: %d", New_Character.wis_base);
-            mvwprintw(centerwin, centerwin_y_max - 2, 30, "Cha: %d", New_Character.cha_base);
-        }
-           
-        wrefresh(centerwin);
-    }
-    endwin();
-}
-
-
-std::string getPlayerName(WINDOW *win, int y_max, int x_max)
+std::string getPlayerName(WINDOW *win, int x_max)
 {
     std::string player_name;
     wclear(win);
     box(win, 0, 0);
-    mvwprintw(win, y_max / 2, x_max / 2 - 15, "Enter Your (the Player's) name:");
+    mvwprintw(win, 1, x_max / 2 - 15, "Enter Your (the Player's) name:");
     int mainwin_y_max, mainwin_x_max;
     getmaxyx(stdscr, mainwin_y_max, mainwin_x_max);
     WINDOW *textwin = newwin(3, 20, mainwin_y_max / 2 + 1, mainwin_x_max / 2 - 12);
@@ -267,12 +38,12 @@ std::string getPlayerName(WINDOW *win, int y_max, int x_max)
     return player_name;
 }
 
-std::string getCharName(WINDOW *win, int y_max, int x_max)
+std::string getCharName(WINDOW *win, int x_max)
 {
     std::string char_name;
     wclear(win);
     box(win, 0, 0);
-    mvwprintw(win, y_max / 2, x_max / 2 - 14, "Enter Your Character's Name:");
+    mvwprintw(win, 1, x_max / 2 - 14, "Enter Your Character's Name:");
 
     int mainwin_y_max, mainwin_x_max;
     getmaxyx(stdscr, mainwin_y_max, mainwin_x_max);
@@ -504,8 +275,6 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
     int race_index = 0;
     std::string chosen_sub;
 
-    //std::string stats_list[6] = {"Str", "Dex", "Con", "Int", "Wis", "Cha"};
-
     std::string db_subs[10] = {"Black", "Blue", "Brass", "Bronze", "Copper",
                                "Gold", "Green", "Red", "Silver", "White"};
     std::string db_sub_desc[10] = {"Breath: Acid, 5x30ft line (Dex Save)",
@@ -535,7 +304,6 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
     std::string human_sub_desc[2] = {"+1 to all stats",
                                      "+1 to 2 stats of player choice, 1 feat"};
 
-    ///////// The source of my problems?????
     int index = 0;
     while(1)
     {
@@ -547,9 +315,6 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
             ++index;
         }
     }
-    /////////////
-    // Maybe a for loop will fix it?
-
 
     int choice;
     int highlight = 0;
@@ -581,33 +346,25 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
                         highlight--;
                         if (highlight == -1)
                             highlight = 9;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 107:
                         highlight--;
                         if (highlight == -1)
                             highlight = 9;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case KEY_DOWN:
                         highlight++;
                         if (highlight == 10)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 106:
                         highlight++;
                         if (highlight == 10)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     default:
                         break;
@@ -646,33 +403,25 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
                         highlight--;
                         if (highlight == -1)
                             highlight = 1;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 107:
                         highlight--;
                         if (highlight == -1)
                             highlight = 1;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case KEY_DOWN:
                         highlight++;
                         if (highlight == 2)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 106:
                         highlight++;
                         if (highlight == 2)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     default:
                         break;
@@ -711,33 +460,25 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
                         highlight--;
                         if (highlight == -1)
                             highlight = 2;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 107:
                         highlight--;
                         if (highlight == -1)
                             highlight = 2;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case KEY_DOWN:
                         highlight++;
                         if (highlight == 3)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 106:
                         highlight++;
                         if (highlight == 3)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     default:
                         break;
@@ -776,33 +517,25 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
                         highlight--;
                         if (highlight == -1)
                             highlight = 1;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 107:
                         highlight--;
                         if (highlight == -1)
                             highlight = 1;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case KEY_DOWN:
                         highlight++;
                         if (highlight == 2)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 106:
                         highlight++;
                         if (highlight == 2)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     default:
                         break;
@@ -845,33 +578,25 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
                         highlight--;
                         if (highlight == -1)
                             highlight = 1;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 107:
                         highlight--;
                         if (highlight == -1)
                             highlight = 1;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case KEY_DOWN:
                         highlight++;
                         if (highlight == 2)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 106:
                         highlight++;
                         if (highlight == 2)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     default:
                         break;
@@ -910,33 +635,25 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
                         highlight--;
                         if (highlight == -1)
                             highlight = 1;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 107:
                         highlight--;
                         if (highlight == -1)
                             highlight = 1;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case KEY_DOWN:
                         highlight++;
                         if (highlight == 2)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     case 106:
                         highlight++;
                         if (highlight == 2)
                             highlight = 0;
-                        wclear(win);
-                        box(win, 0, 0);
-                        wrefresh(win);
+                        refreshWindow(win);
                         break;
                     default:
                         break;
@@ -960,7 +677,7 @@ std::string getCharSubRace(WINDOW *win, int x_max, std::string race)
     return chosen_sub;
 }
 
-int halfElf(WINDOW *win, int x_max, std::string* stat_list, int length)
+int plusOne(WINDOW *win, int x_max, std::string* stat_list, int length)
 {
     int plus_stat;
     int highlight = 0;
@@ -990,33 +707,25 @@ int halfElf(WINDOW *win, int x_max, std::string* stat_list, int length)
                 highlight--;
                 if (highlight == -1)
                     highlight = length;
-                wclear(win);
-                box(win, 0, 0);
-                wrefresh(win);
+                refreshWindow(win);
                 break;
             case 107:
                 highlight--;
                 if (highlight == -1)
                     highlight = length;
-                wclear(win);
-                box(win, 0, 0);
-                wrefresh(win);
+                refreshWindow(win);
                 break;
             case KEY_DOWN:
                 highlight++;
                 if (highlight == length)
                     highlight = 0;
-                wclear(win);
-                box(win, 0, 0);
-                wrefresh(win);
+                refreshWindow(win);
                 break;
             case 106:
                 highlight++;
                 if (highlight == length)
                     highlight = 0;
-                wclear(win);
-                box(win, 0, 0);
-                wrefresh(win);
+                refreshWindow(win);
                 break;
             default:
                 break;
@@ -1034,7 +743,7 @@ int halfElf(WINDOW *win, int x_max, std::string* stat_list, int length)
 }
 
 
-void genStatsWindow(WINDOW *win, int x_max, Character character, std::string char_class)
+Character genStatsWindow(WINDOW *win, int x_max, Character character, std::string char_class)
 {
     int highlight = 0;
     int choice;
@@ -1063,33 +772,25 @@ void genStatsWindow(WINDOW *win, int x_max, Character character, std::string cha
                 highlight--;
                 if (highlight == -1)
                     highlight = 2;
-                wclear(win);
-                box(win, 0, 0);
-                wrefresh(win);
+                refreshWindow(win);
                 break;
             case 107:
                 highlight--;
                 if (highlight == -1)
                     highlight = 2;
-                wclear(win);
-                box(win, 0, 0);
-                wrefresh(win);
+                refreshWindow(win);
                 break;
             case KEY_DOWN:
                 highlight++;
                 if (highlight == 3)
                     highlight = 0;
-                wclear(win);
-                box(win, 0, 0);
-                wrefresh(win);
+                refreshWindow(win);
                 break;
             case 106:
                 highlight++;
                 if (highlight == 3)
                     highlight = 0;
-                wclear(win);
-                box(win, 0, 0);
-                wrefresh(win);
+                refreshWindow(win);
                 break;
             default:
                 break;
@@ -1101,14 +802,24 @@ void genStatsWindow(WINDOW *win, int x_max, Character character, std::string cha
             switch(highlight)
             {
                 case 0:
-                    stdArray1(win, x_max, char_class);
-                    wclear(win);
-                    box(win, 0, 0);
-                    wrefresh(win);
+                    character = stdArray(win, x_max, char_class, character);
+                    refreshWindow(win);
+                    break;
+                case 1:
+                    character = rollStats(win, x_max, character, char_class);
+                    refreshWindow(win);
+                    break;
+                case 2:
+                    character = manualStats(win, x_max, character);
+                    refreshWindow(win);
                     break;
                 default:
                     break;
             }
         }
     }
+    
+    endwin();
+
+    return character;
 }

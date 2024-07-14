@@ -1,4 +1,5 @@
 #include "../include/diceroll.h"
+#include "../include/logos.h"
 #include <iostream>
 #include <string>
 #include <stdlib.h>

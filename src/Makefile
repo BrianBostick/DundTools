@@ -1,5 +1,5 @@
 TUI-OBJS = tui.o diceroll.o ascii_nums.o character_creator.o logos.o stats.o
-DR-OBJS = rolldice.o diceroll.o
+DR-OBJS = rolldice.o diceroll.o logos.o ascii_nums.o
 CFLAGS = -Wall -g
 CC = g++
 INCLUDE =
@@ -11,7 +11,7 @@ tui: ${TUI-OBJS}
 	${CC} ${CFLAGS} ${INCLUDES} -o $@ ${TUI-OBJS} ${LIBS}
 
 rolldice: ${DR-OBJS}
-	${CC} ${CFLAGS} ${INCLUDES} -o $@ ${DR-OBJS}
+	${CC} ${CFLAGS} ${INCLUDES} -o $@ ${DR-OBJS} ${LIBS}
 
 clean:
 	rm *.o tui rolldice

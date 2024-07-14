@@ -25,15 +25,14 @@ class Character
         }
 };
 
-void genCCWindow();
-std::string getPlayerName(WINDOW *, int, int);
-std::string getCharName(WINDOW *, int, int);
+std::string getPlayerName(WINDOW *, int);
+std::string getCharName(WINDOW *, int);
 std::string getCharClass(WINDOW *, int);
 std::string getCharRace(WINDOW *, int);
 bool checkForSub(std::string);
 std::string getCharSubRace(WINDOW *, int, std::string);
-int halfElf(WINDOW *, int, std::string *, int);
-void genStatsWindow(WINDOW *, int, Character, std::string);
+int plusOne(WINDOW *, int, std::string *, int);
+Character genStatsWindow(WINDOW *, int, Character, std::string);
 
 
 #endif
