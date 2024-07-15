@@ -2,17 +2,13 @@
 A collection of TUI and CLI tools for D&D 5e games.
 
 <hr>
-**!! MAJOR REVISIONS NEEDED !!**
-I've noticed that I'm having a hard time figuring out how to get functions to return the informaiton I need, and I've realized it's because I'm making too many nested functions.
+Dependencies:
 
-I'm going to redo **most** of the application so I'm returning values to tui.cpp. I've been spreading things out too much and it's starting to make a tangled mess.
+Ncurses
+[OpenXLSX](https://github.com/troldal/OpenXLSX)
 <hr>
 
 **This has only been tested on Linux systems. Specifically Linux Mint 21.3, Arch Linux, and a Raspberry Pi OS 32-bit. It should *in theory* work on MacOS, but I have no way of testing it on Windows.**
-
-The only dependency is Ncurses.
-
-If you want to build the program, install the Ncurses library (should be available in your package manager, I believe it was `libncurses-dev` for Ubuntu-based Linux distros).
 
 After cloning the repo:
 
@@ -32,7 +28,10 @@ So far I plan on adding the following modules:
 
 - Dice Roller (Standalone (C) & TUI (C))
 - Character Creator (W)
-    - Import/Export characters from .xlsx files (P)
+    - Import/Export characters from .xlsx files (W)
+    - Edit existing characters (P)
+    - Level up characters (P)
+    - (Character sheet is itself a WIP)
 - Notes App (P)
 - DM Screen (P)
     - Notes (P)
