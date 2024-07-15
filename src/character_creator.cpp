@@ -1,5 +1,6 @@
 #include "../include/character_creator.h"
 #include "../include/diceroll.h"
+#include "../include/export.h"
 #include "../include/logos.h"
 #include "../include/stats.h"
 #include <ncurses.h>

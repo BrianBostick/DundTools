@@ -1,6 +1,7 @@
 #include "../include/ascii_nums.h"
 #include "../include/character_creator.h"
 #include "../include/diceroll.h"
+#include "../include/export.h"
 #include "../include/logos.h"
 #include "../include/stats.h"
 #include "../include/tui.h"
@@ -191,7 +192,7 @@ void genCCWindow()
     wrefresh(centerwin);
     keypad(centerwin, true);
 
-    std::string choices[1] = {"New Character"};
+    std::string choices[2] = {"New Character", "Export Character"};
     int choice;
     int highlight = 0;
 
@@ -202,11 +203,14 @@ void genCCWindow()
     bool has_sub;
     std::string char_sub;
     
+    // Character object & base stats set to 0
+    Character New_Character(0, 0, 0, 0, 0, 0);
+
     while(1)
     {
         int plus_stat_1;
         int plus_stat_2;
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
         {
             if (i == highlight)
             {
@@ -223,24 +227,24 @@ void genCCWindow()
             case KEY_UP:
                 highlight--;
                 if (highlight == -1)
-                    highlight = 0;
+                    highlight = 1;
                 refreshWindow(centerwin);
                 break;
             case 107:
                 highlight--;
                 if (highlight == -1)
-                    highlight = 0;
+                    highlight = 1;
                 refreshWindow(centerwin);
                 break;
             case KEY_DOWN:
                 highlight++;
-                if (highlight == 1)
+                if (highlight == 2)
                     highlight = 0;
                 refreshWindow(centerwin);
                 break;
             case 106:
                 highlight++;
-                if (highlight == 1)
+                if (highlight == 2)
                     highlight = 0;
                 refreshWindow(centerwin);
                 break;
@@ -250,6 +254,8 @@ void genCCWindow()
         if (choice == 113)
             break;
         if (choice == 10 && highlight == 0) {
+            New_Character = Character(0,0,0,0,0,0);
+            char_sub = " ";
             player_name = getPlayerName(centerwin, centerwin_x_max);
             char_name = getCharName(centerwin, centerwin_x_max);
             char_class = getCharClass(centerwin, centerwin_x_max);
@@ -289,115 +295,127 @@ void genCCWindow()
                 if (plus_stat_2 == 1 && plus_stat_1 == 1)
                     plus_stat_2 = 0;
             } 
-        }
-        refreshWindow(centerwin);
 
-        // Character object & base stats set to 0
-        Character New_Character(0, 0, 0, 0, 0, 0);
-        if ((char_race == "Dragonborn") || (has_sub == false))
+            if ((char_race == "Dragonborn") || (has_sub == false))
+            {
+                New_Character = Character(getStrNoSub(char_race), getDexNoSub(char_race),
+                                          getConNoSub(char_race), getIntNoSub(char_race),
+                                          getWisNoSub(char_race), getChaNoSub(char_race));
+            } else if (char_race == "Half-Elf") {
+                switch(plus_stat_1)
+                {
+                    case 0:
+                        New_Character.str_base += 1;
+                        break;
+                    case 1:
+                        New_Character.dex_base += 1;
+                        break;
+                    case 2:
+                        New_Character.con_base += 1;
+                        break;
+                    case 3:
+                        New_Character.int_base += 1;
+                        break;
+                    case 4:
+                        New_Character.wis_base += 1;
+                        break;
+                    default:
+                        break;
+                }
+
+                switch(plus_stat_2)
+                {
+                    case 0:
+                        New_Character.str_base += 1;
+                        break;
+                    case 1:
+                        New_Character.dex_base += 1;
+                        break;
+                    case 2:
+                        New_Character.con_base += 1;
+                        break;
+                    case 3:
+                        New_Character.int_base += 1;
+                        break;
+                    case 4:
+                        New_Character.wis_base += 1;
+                        break;
+                    default:
+                        break;
+                }
+                New_Character.cha_base += 2;
+            } else if (char_sub == "Variant") {
+                switch(plus_stat_1)
+                {
+                case 0:
+                    New_Character.str_base += 1;
+                    break;
+                case 1:
+                    New_Character.dex_base += 1;
+                    break;
+                case 2:
+                    New_Character.con_base += 1;
+                    break;
+                case 3:
+                    New_Character.int_base += 1;
+                    break;
+                case 4:
+                    New_Character.wis_base += 1;
+                    break;
+                default:
+                    break;
+                }
+
+                switch(plus_stat_2)
+                {
+                case 0:
+                    New_Character.str_base += 1;
+                    break;
+                case 1:
+                    New_Character.dex_base += 1;
+                    break;
+                case 2:
+                    New_Character.con_base += 1;
+                    break;
+                case 3:
+                    New_Character.int_base += 1;
+                    break;
+                case 4:
+                    New_Character.wis_base += 1;
+                    break;
+                default:
+                    break;
+                }
+            } else if (char_race != "Dragonborn" && has_sub == true) {
+                New_Character = Character(getStrSub(char_sub), getDexSub(char_sub),
+                                          getConSub(char_sub), getIntSub(char_sub),
+                                          getWisSub(char_sub), getChaSub(char_sub));
+            }
+            Character Char_Stats = genStatsWindow(centerwin, centerwin_x_max, New_Character, char_class);
+            New_Character = Character(New_Character.str_base + Char_Stats.str_base,
+                                      New_Character.dex_base + Char_Stats.dex_base,
+                                      New_Character.con_base + Char_Stats.con_base,
+                                      New_Character.int_base + Char_Stats.int_base,
+                                      New_Character.wis_base + Char_Stats.wis_base,
+                                      New_Character.cha_base + Char_Stats.cha_base);
+            refreshWindow(centerwin);
+        }
+        if (choice == 10 && highlight == 1)
         {
-            New_Character = Character(getStrNoSub(char_race), getDexNoSub(char_race),
-                                      getConNoSub(char_race), getIntNoSub(char_race),
-                                      getWisNoSub(char_race), getChaNoSub(char_race));
-        } else if (char_race == "Half-Elf") {
-            switch(plus_stat_1)
+            // If the user hasn't gone through the character creator yet, they won't be able to export a blank CSheet
+            if (New_Character.str_base != 0)
             {
-            case 0:
-                New_Character.str_base += 1;
-                break;
-            case 1:
-                New_Character.dex_base += 1;
-                break;
-            case 2:
-                New_Character.con_base += 1;
-                break;
-            case 3:
-                New_Character.int_base += 1;
-                break;
-            case 4:
-                New_Character.wis_base += 1;
-                break;
-            default:
-                break;
+                createSpreadsheet(player_name, char_name, char_class, char_race, char_sub, New_Character);
+                mvwprintw(centerwin, 1, centerwin_x_max / 2 - 20, "Character exported as \"characters/%s.xlsx\"", char_name.c_str());
+                continue;
+            } else {
+                mvwprintw(centerwin, 1, centerwin_x_max / 2 - 22, "No Character Available to Export - Select New Character");
+                continue;
             }
-
-            switch(plus_stat_2)
-            {
-            case 0:
-                New_Character.str_base += 1;
-                break;
-            case 1:
-                New_Character.dex_base += 1;
-                break;
-            case 2:
-                New_Character.con_base += 1;
-                break;
-            case 3:
-                New_Character.int_base += 1;
-                break;
-            case 4:
-                New_Character.wis_base += 1;
-                break;
-            default:
-                break;
-            }
-            New_Character.cha_base += 2;
-        } else if (char_sub == "Variant") {
-            switch(plus_stat_1)
-            {
-            case 0:
-                New_Character.str_base += 1;
-                break;
-            case 1:
-                New_Character.dex_base += 1;
-                break;
-            case 2:
-                New_Character.con_base += 1;
-                break;
-            case 3:
-                New_Character.int_base += 1;
-                break;
-            case 4:
-                New_Character.wis_base += 1;
-                break;
-            default:
-                break;
-            }
-
-            switch(plus_stat_2)
-            {
-            case 0:
-                New_Character.str_base += 1;
-                break;
-            case 1:
-                New_Character.dex_base += 1;
-                break;
-            case 2:
-                New_Character.con_base += 1;
-                break;
-            case 3:
-                New_Character.int_base += 1;
-                break;
-            case 4:
-                New_Character.wis_base += 1;
-                break;
-            default:
-                break;
-            }
-            New_Character.cha_base += 2;
-        } else if (char_race != "Dragonborn" && has_sub == true) {
-            New_Character = Character(getStrSub(char_sub), getDexSub(char_sub),
-                                      getConSub(char_sub), getIntSub(char_sub),
-                                      getWisSub(char_sub), getChaSub(char_sub));
         }
-        Character Char_Stats = genStatsWindow(centerwin, centerwin_x_max, New_Character, char_class);
-        New_Character = Character(New_Character.str_base + Char_Stats.str_base,
-                                  New_Character.dex_base + Char_Stats.dex_base,
-                                  New_Character.con_base + Char_Stats.con_base,
-                                  New_Character.int_base + Char_Stats.int_base,
-                                  New_Character.wis_base + Char_Stats.wis_base,
-                                  New_Character.cha_base + Char_Stats.cha_base);
+
         refreshWindow(centerwin);
+
 
         // For debugging purposes
         if (char_race == "Half-Elf")

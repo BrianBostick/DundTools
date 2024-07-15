@@ -1,5 +1,5 @@
-#include <ncurses.h>
 #include "../include/ascii_nums.h"
+#include <ncurses.h>
 
 
 void over100(WINDOW *win)
