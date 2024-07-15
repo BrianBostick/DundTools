@@ -4,7 +4,7 @@ A collection of TUI and CLI tools for D&D 5e games.
 <hr>
 Dependencies:
 
-Ncurses
+Ncurses<br>
 [OpenXLSX](https://github.com/troldal/OpenXLSX)
 <hr>
 
