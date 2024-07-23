@@ -58,7 +58,7 @@ int main()
     box(descwin, 0, 0);
     
     std::string choices[3] = {"DiceRoll", "Character Creator", "Random Name Generator"};
-    std::string descriptions[3] = {"A simple dice roll simulator", "A step-by-step first level character creator", "A random name generator for Players/NPCs"};
+    std::string descriptions[3] = {"A simple dice roll simulator", "A step-by-step first level character creator", "A random name generator for NPCs"};
     int choice;
     int highlight = 0;
     mvwprintw(descwin, 1, 1, "%s", descriptions[0].c_str());
@@ -502,7 +502,7 @@ void genNameGenerator()
 
     WINDOW *textbox = newwin(3, 20, mainwin_y_max / 2 + 1, mainwin_x_max / 2 - 12);
     box(textbox, 0, 0);
-    refreshWindow(textbox);
+    wrefresh(textbox);
 
     std::string name;
 
@@ -510,16 +510,18 @@ void genNameGenerator()
 
     while(1)
     {
-
         mvwprintw(centerwin, 1, centerwin_x_max / 2 - 15, "Press Enter to generate a name");
         mvwprintw(centerwin, 2, centerwin_x_max / 2 - 14, "Q to return to the main menu");
+        wrefresh(centerwin);
+
+        name = genName();
+        mvwprintw(textbox, 1, 1, "%s", name.c_str());
+        wrefresh(textbox);
 
         choice = wgetch(centerwin);
 
         if (choice == 10)
         {
-            name = genName();
-            mvwprintw(textbox, 1, 1, name.c_str());
             refreshWindow(textbox);
             continue;
         }
