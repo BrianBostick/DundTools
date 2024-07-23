@@ -8,16 +8,16 @@ LIBS = -lncurses -lOpenXLSX
 all: tui rolldice namegen
 
 tui: ${TUI-OBJS}
-	${CC} ${CFLAGS} ${INCLUDE} -o $@ ${TUI-OBJS} ${LIBS}
+	${CC} ${CFLAGS} ${INCLUDE} -o ../bin/$@ ${TUI-OBJS} ${LIBS}
 
 rolldice: ${DR-OBJS}
-	${CC} ${CFLAGS} -o $@ ${DR-OBJS} ${LIBS}
+	${CC} ${CFLAGS} -o ../bin/$@ ${DR-OBJS} ${LIBS}
 
 namegen: namegen.o name_generator.o diceroll.o logos.o ascii_nums.o
-	${CC} ${CFLAGS} -o $@ namegen.o name_generator.o diceroll.o logos.o ascii_nums.o ${LIBS}
+	${CC} ${CFLAGS} -o ../bin/$@ namegen.o name_generator.o diceroll.o logos.o ascii_nums.o ${LIBS}
 
 clean:
-	rm *.o tui rolldice namegen
+	rm *.o ../bin/*
 
 .cpp.o:
 	${CC} ${CFLAGS} ${INCLUDES}-c $<
