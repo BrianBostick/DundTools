@@ -25,6 +25,8 @@ As long as you have the correct libraries installed, you should be able to compi
 
 If it doesn't work, I'm afraid I'm not going to be a whole lot of help.
 
+Executables will be found in `DundTools/bin` after compiling.
+
 Also keep in mind that this is *very* much a WIP - expect lots of bugs, errors, crashes, and general not-good times. I'm always happy to receive bug reports.
 
 <hr>
@@ -66,6 +68,8 @@ After cloning the repo, use the following commands:
 `cd DundTools/src`<br>
 `make rolldice`
 
+The `rolldice` executable will be found in `DundTools/bin`.
+
 Run the program with:
 
 `./rolldice <number of dice> <type of dice> <mod>`
@@ -75,7 +79,7 @@ Run the program with:
 <hr>
 
 # NameGen
-NameGen is a standalone CLI pseudo-random name generator. It uses a previously mentioned RollDice function to generate a random first and last name (sometimes just a first, which is undefined behavior but I like it so I'm leaving it in) using a list of names (located in `${PROJECT_ROOT_DIR}/files/name_generator/names.txt`).
+NameGen is a standalone CLI pseudo-random name generator. It uses a previously mentioned RollDice function to generate a random first and last name (sometimes just a first, which is undefined behavior but I like it so I'm leaving it in) using a list of names (located in `DundTools/files/name_generator/names.txt`).
 
 The list of names was found at [this webpage](https://hanleybrady.com/fantasy-name-bank/).
 
@@ -87,6 +91,8 @@ After cloning the repo, use the following commands to build:
 
 `cd DundTools/src`<br>
 `make namegen`
+
+The executable will be found in `DundTools/bin`.
 
 Run the program with:
 
