@@ -1,20 +1,21 @@
-TUI-OBJS = tui.o name_generator.o diceroll.o ascii_nums.o character_creator.o logos.o stats.o export.o equipment.o
+DUNDTOOLS-OBJS = dundtools.o name_generator.o diceroll.o ascii_nums.o character_creator.o logos.o stats.o export.o equipment.o
 DR-OBJS = rolldice.o diceroll.o logos.o ascii_nums.o
+NAMEGEN-OBJS = namegen.o name_generator.o diceroll.o logos.o ascii_nums.o
 CFLAGS = -Wall -g
 CC = g++
 INCLUDE = -I../include -I/usr/local/include
 LIBS = -lncurses -lOpenXLSX
 
-all: tui rolldice namegen
+all: dundtools rolldice namegen
 
-tui: ${TUI-OBJS}
+tui: ${DUNDTOOLS-OBJS}
 	${CC} ${CFLAGS} ${INCLUDE} -o ../bin/$@ ${TUI-OBJS} ${LIBS}
 
 rolldice: ${DR-OBJS}
 	${CC} ${CFLAGS} -o ../bin/$@ ${DR-OBJS} ${LIBS}
 
-namegen: namegen.o name_generator.o diceroll.o logos.o ascii_nums.o
-	${CC} ${CFLAGS} -o ../bin/$@ namegen.o name_generator.o diceroll.o logos.o ascii_nums.o ${LIBS}
+namegen: ${NAMEGEN-OBJS}
+	${CC} ${CFLAGS} -o ../bin/$@ ${NAMEGEN-OBJS} ${LIBS}
 
 clean:
 	rm *.o ../bin/*

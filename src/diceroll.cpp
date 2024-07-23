@@ -1,7 +1,7 @@
 #include "../include/ascii_nums.h"
 #include "../include/diceroll.h"
 #include "../include/logos.h"
-#include "../include/tui.h"
+#include "../include/dundtools.h"
 #include <inttypes.h>
 #include <ncurses.h>
 #include <random> // for mt19937 & uniform_int_distribution

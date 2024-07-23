@@ -4,7 +4,7 @@
 #include "name_generator.h"
 #include "../include/ascii_nums.h"
 #include "../include/logos.h"
-#include "../include/tui.h"
+#include "../include/dundtools.h"
 #include <inttypes.h>
 #include <ncurses.h>
 #include <random>

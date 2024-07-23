@@ -5,7 +5,7 @@
 #include "../include/logos.h"
 #include "../include/name_generator.h"
 #include "../include/stats.h"
-#include "../include/tui.h"
+#include "../include/dundtools.h"
 #include <ncurses.h>
 #include <inttypes.h>
 #include <string>
