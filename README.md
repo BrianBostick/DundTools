@@ -2,19 +2,19 @@
 A collection of TUI and CLI tools for D&D 5e games.
 
 <hr>
-Dependencies:
+<h3>Dependencies:</h3>
 
 Ncurses<br>
 [OpenXLSX](https://github.com/troldal/OpenXLSX)
 <hr>
 
-**This has only been tested on Linux systems. Specifically Linux Mint 21.3, Arch Linux, and a Raspberry Pi OS 32-bit. It should *in theory* work on MacOS, but I have no way of testing it on Windows.**
+**This has only been tested on Linux systems. Specifically Linux Mint 21.3, Arch Linux, and Raspberry Pi OS 32-bit. It should *in theory* work on MacOS, but I have no way of testing it on Windows.**
 
 After cloning the repo:
 
-`cd DundTools/src`
-To compile just the TUI application: `make tui`
-To compile just the CLI dice roller: `make rolldice`
+`cd DundTools/src`<br>
+To compile just the TUI application: `make tui`<br>
+To compile just the CLI dice roller: `make rolldice`<br>
 To compile both: `make all` (Just `make` also works if you're lazy)
 
 As long as you have the correct Ncurses library installed, you should be able to compile and run the applications from here with `./tui` and `./rolldice`.
@@ -32,6 +32,7 @@ So far I plan on adding the following modules:
     - Edit existing characters (P)
     - Level up characters (P)
     - (Character sheet is itself a WIP)
+- Random Name Generator (Standalone (C) & TUI (W)
 - Notes App (P)
 - DM Screen (P)
     - Notes (P)
@@ -55,7 +56,7 @@ RollDice is a standalone CLI dice rolling simulator.
 
 After cloning the repo, use the following commands:
 
-`cd DundTools/src`
+`cd DundTools/src`<br>
 `make rolldice`
 
 Run the program with:
@@ -63,3 +64,23 @@ Run the program with:
 `./rolldice <number of dice> <type of dice> <mod>`
 
 (Use a negative number to subtract the modifier)
+
+# NameGen
+NameGen is a standalone CLI pseudo-random name generator. It uses a previously mentioned RollDice function to generate a random first and last name (sometimes just a first, which is undefined behavior but I like it so I'm leaving it in) using a list of names (located in `${PROJECT_ROOT_DIR}/files/name_generator/names.txt`).
+
+The list of names was found at [this webpage](https://hanleybrady.com/fantasy-name-bank/).
+
+I've copied 3109 names from that page into names.txt. If my math is correct, that means there are **over 12,000** possible name combinations.
+
+(But don't quote me on that; math was my weakest subject in school)
+
+After cloning the repo, use the following commands to build:
+
+`cd DundTools/src`<br>
+`make namegen`
+
+Run the program with:
+
+`./namegen`
+
+A random name will be printed to the console.
