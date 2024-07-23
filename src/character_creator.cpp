@@ -2,6 +2,7 @@
 #include "../include/diceroll.h"
 #include "../include/export.h"
 #include "../include/logos.h"
+#include "../include/name_generator.h"
 #include "../include/stats.h"
 #include <ncurses.h>
 #include <string>
@@ -45,6 +46,7 @@ std::string getCharName(WINDOW *win, int x_max)
     wclear(win);
     box(win, 0, 0);
     mvwprintw(win, 1, x_max / 2 - 14, "Enter Your Character's Name:");
+    mvwprintw(win, 2, x_max / 2 - 33, "Press Enter without typing anything else to generate a random name");
 
     int mainwin_y_max, mainwin_x_max;
     getmaxyx(stdscr, mainwin_y_max, mainwin_x_max);
@@ -58,6 +60,11 @@ std::string getCharName(WINDOW *win, int x_max)
     wrefresh(textwin);
     wmove(textwin, 1, 1);
     char ch = wgetch(textwin);
+
+    // Will this skip the while loop??
+    if (ch == '\n')
+        char_name = genName();
+
     while (ch != '\n')
     {
        char_name.push_back(ch); 
