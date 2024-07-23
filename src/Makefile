@@ -8,8 +8,8 @@ LIBS = -lncurses -lOpenXLSX
 
 all: dundtools rolldice namegen
 
-tui: ${DUNDTOOLS-OBJS}
-	${CC} ${CFLAGS} ${INCLUDE} -o ../bin/$@ ${TUI-OBJS} ${LIBS}
+dundtools: ${DUNDTOOLS-OBJS}
+	${CC} ${CFLAGS} ${INCLUDE} -o ../bin/$@ ${DUNDTOOLS-OBJS} ${LIBS}
 
 rolldice: ${DR-OBJS}
 	${CC} ${CFLAGS} -o ../bin/$@ ${DR-OBJS} ${LIBS}

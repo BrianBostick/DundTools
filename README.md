@@ -16,12 +16,12 @@ Ncurses<br>
 After cloning the repo:
 
 `cd DundTools/src`<br>
-To compile just the TUI application: `make tui`<br>
+To compile just the TUI application: `make dundtools`<br>
 To compile just the CLI dice roller: `make rolldice`<br>
 To compile just the CLI name generator: `make namegen`<br>
 To compile everything: `make all` (Just `make` also works if you're lazy)
 
-As long as you have the correct libraries installed, you should be able to compile and run the applications from here with `./tui`, `./rolldice`, and `./namegen`. Specific instructions for running each program will be listed in their respective sections below.
+As long as you have the correct libraries installed, you should be able to compile and run the applications from here with `./dundtools`, `./rolldice`, and `./namegen`. Specific instructions for running each program will be listed in their respective sections below.
 
 If it doesn't work, I'm afraid I'm not going to be a whole lot of help.
 
