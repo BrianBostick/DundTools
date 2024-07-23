@@ -3,6 +3,7 @@
 #include "../include/diceroll.h"
 #include "../include/export.h"
 #include "../include/logos.h"
+#include "../include/name_generator.h"
 #include "../include/stats.h"
 #include "../include/tui.h"
 #include <ncurses.h>
@@ -56,8 +57,8 @@ int main()
     WINDOW *descwin = newwin(bottomwin_y_max - 2, (bottomwin_x_max / 2) - 2, bottomwin_y_max + 4, menuwin_x_max + 4);
     box(descwin, 0, 0);
     
-    std::string choices[2] = {"DiceRoll", "Character Creator"};
-    std::string descriptions[2] = {"A simple dice roll simulator", "A step-by-step first level character creator"};
+    std::string choices[3] = {"DiceRoll", "Character Creator", "Random Name Generator"};
+    std::string descriptions[3] = {"A simple dice roll simulator", "A step-by-step first level character creator", "A random name generator for Players/NPCs"};
     int choice;
     int highlight = 0;
     mvwprintw(descwin, 1, 1, "%s", descriptions[0].c_str());
@@ -66,7 +67,7 @@ int main()
     // Main loop
     while(1)
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
             if (i == highlight)
                 wattron(menuwin, A_REVERSE);
@@ -80,7 +81,7 @@ int main()
             case KEY_UP:
                 highlight--;
                 if (highlight == -1)
-                    highlight = 1;
+                    highlight = 2;
                 wclear(descwin);
                 mvwprintw(descwin, 1, 1, "%s", descriptions[highlight].c_str());
                 box(descwin, 0, 0);
@@ -90,7 +91,7 @@ int main()
             case 107:
                 highlight--;
                 if (highlight == -1)
-                    highlight = 1;
+                    highlight = 2;
                 wclear(descwin);
                 mvwprintw(descwin, 1, 1, "%s", descriptions[highlight].c_str());
                 box(descwin, 0, 0);
@@ -98,7 +99,7 @@ int main()
                 break;
             case KEY_DOWN:
                 highlight++;
-                if (highlight == 2)
+                if (highlight == 3)
                     highlight = 0;
                 wclear(descwin);
                 mvwprintw(descwin, 1, 1, "%s", descriptions[highlight].c_str());
@@ -108,7 +109,7 @@ int main()
             // press j to move cursor down
             case 106:
                 highlight++;
-                if (highlight == 2)
+                if (highlight == 3)
                     highlight = 0;
                 wclear(descwin);
                 mvwprintw(descwin, 1, 1, "%s", descriptions[highlight].c_str());
@@ -130,6 +131,11 @@ int main()
         if (choice == 10 && highlight == 1) {
             endwin();
             genCCWindow();
+            genHomeWindow(logowin, logowin_y_max, logowin_x_max, bottomwin, menuwin, descwin);
+        }
+        if (choice == 10 && highlight == 2) {
+            endwin();
+            genNameGenerator();
             genHomeWindow(logowin, logowin_y_max, logowin_x_max, bottomwin, menuwin, descwin);
         }
     }
@@ -205,6 +211,7 @@ void genCCWindow()
     
     // Character object & base stats set to 0
     Character New_Character(0, 0, 0, 0, 0, 0);
+    StatMods New_Mods(0, 0, 0, 0, 0, 0);
 
     while(1)
     {
@@ -255,6 +262,7 @@ void genCCWindow()
             break;
         if (choice == 10 && highlight == 0) {
             New_Character = Character(0,0,0,0,0,0);
+            New_Mods = StatMods(0,0,0,0,0,0);
             char_sub = " ";
             player_name = getPlayerName(centerwin, centerwin_x_max);
             char_name = getCharName(centerwin, centerwin_x_max);
@@ -398,6 +406,9 @@ void genCCWindow()
                                       New_Character.int_base + Char_Stats.int_base,
                                       New_Character.wis_base + Char_Stats.wis_base,
                                       New_Character.cha_base + Char_Stats.cha_base);
+            New_Mods = StatMods(modMath(New_Character.str_base), modMath(New_Character.dex_base),
+                                modMath(New_Character.con_base), modMath(New_Character.int_base),
+                                modMath(New_Character.wis_base), modMath(New_Character.cha_base));
             refreshWindow(centerwin);
         }
         if (choice == 10 && highlight == 1)
@@ -405,7 +416,7 @@ void genCCWindow()
             // If the user hasn't gone through the character creator yet, they won't be able to export a blank CSheet
             if (New_Character.str_base != 0)
             {
-                createSpreadsheet(player_name, char_name, char_class, char_race, char_sub, New_Character);
+                createSpreadsheet(player_name, char_name, char_class, char_race, char_sub, New_Character, New_Mods);
                 mvwprintw(centerwin, 1, centerwin_x_max / 2 - 20, "Character exported as \"characters/%s.xlsx\"", char_name.c_str());
                 continue;
             } else {
@@ -462,6 +473,60 @@ void genCCWindow()
         }
            
         wrefresh(centerwin);
+    }
+
+    endwin();
+}
+
+void genNameGenerator()
+{
+    initscr();
+    noecho();
+    cbreak();
+    curs_set(0);
+
+    int mainwin_y_max, mainwin_x_max;
+    getmaxyx(stdscr, mainwin_y_max, mainwin_x_max);
+    box(stdscr, 0, 0);
+
+    printLogo(stdscr, 2, 50);
+    printCCLogo(stdscr, mainwin_y_max, mainwin_x_max);
+    refresh();
+
+    WINDOW *centerwin = newwin(mainwin_y_max / 2, mainwin_x_max / 2, mainwin_y_max / 4, mainwin_x_max / 4);
+    int centerwin_y_max, centerwin_x_max;
+    getmaxyx(centerwin, centerwin_y_max, centerwin_x_max);
+    box(centerwin, 0, 0);
+    wrefresh(centerwin);
+    keypad(centerwin, true);
+
+    WINDOW *textbox = newwin(3, 20, mainwin_y_max / 2 + 1, mainwin_x_max / 2 - 12);
+    box(textbox, 0, 0);
+    refreshWindow(textbox);
+
+    std::string name;
+
+    int choice;
+
+    while(1)
+    {
+
+        mvwprintw(centerwin, 1, centerwin_x_max / 2 - 15, "Press Enter to generate a name");
+        mvwprintw(centerwin, 2, centerwin_x_max / 2 - 14, "Q to return to the main menu");
+
+        choice = wgetch(centerwin);
+
+        if (choice == 10)
+        {
+            name = genName();
+            mvwprintw(textbox, 1, 1, name.c_str());
+            refreshWindow(textbox);
+            continue;
+        }
+        if (choice == 113)
+        {
+            break;
+        }
     }
 
     endwin();

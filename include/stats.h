@@ -2,6 +2,7 @@
 #define STATS_H
 
 #include "diceroll.h"
+#include "equipment.h"
 #include "logos.h"
 #include <ncurses.h>
 #include <string>
@@ -9,7 +10,6 @@
 class StatMods
 {
     public:
-        std::string name;
         int str_mod;
         int dex_mod;
         int con_mod;
@@ -17,9 +17,8 @@ class StatMods
         int wis_mod;
         int cha_mod;
 
-        StatMods(std::string name, int a, int b, int c, int d, int e, int f)
+        StatMods(int a, int b, int c, int d, int e, int f)
         {
-            name = name;
             str_mod = a;
             dex_mod = b;
             con_mod = c;
@@ -47,5 +46,8 @@ Character stdArray(WINDOW *, int, std::string, Character);
 Character rollStats(WINDOW *, int, Character, std::string);
 Character manualStats(WINDOW *, int, Character);
 int getStatInput(WINDOW *, int);
+int modMath(int);
+int getHP(std::string, std::string, int);
+
 
 #endif

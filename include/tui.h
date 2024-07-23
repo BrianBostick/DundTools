@@ -15,4 +15,7 @@ void genLogoWindow(WINDOW *, int, int);
 // Character creator
 void genCCWindow();
 
+// Name generator
+void genNameGenerator();
+
 #endif

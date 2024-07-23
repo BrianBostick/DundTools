@@ -1,5 +1,6 @@
 #include "../include/character_creator.h"
 #include "../include/diceroll.h"
+#include "../include/equipment.h"
 #include "../include/logos.h"
 #include "../include/stats.h"
 #include <ncurses.h>
@@ -873,4 +874,175 @@ int getStatInput(WINDOW* win, int x_max)
     endwin();
 
     return stat;
+}
+
+int modMath(int stat)
+{
+    int mod = 0;
+    switch(stat)
+    {
+        case 1:
+            mod = -5;
+            break;
+        case 2:
+            mod = -4;
+            break;
+        case 3:
+            mod = -4;
+            break;
+        case 4:
+            mod = -3;
+            break;
+        case 5:
+            mod = -3;
+            break;
+        case 6:
+            mod = -2;
+            break;
+        case 7:
+            mod = -2;
+            break;
+        case 8:
+            mod = -1;
+            break;
+        case 9:
+            mod = -1;
+            break;
+        case 10:
+            mod = 0;
+            break;
+        case 11:
+            mod = 0;
+            break;
+        case 12:
+            mod = 1;
+            break;
+        case 13:
+            mod = 1;
+            break;
+        case 14:
+            mod = 2;
+            break;
+        case 15:
+            mod = 2;
+            break;
+        case 16:
+            mod = 3;
+            break;
+        case 17:
+            mod = 3;
+            break;
+        case 18:
+            mod = 4;
+            break;
+        case 19:
+            mod = 4;
+            break;
+        case 20:
+            mod = 5;
+            break;
+        case 21:
+            mod = 5;
+            break;
+        case 22:
+            mod = 6;
+            break;
+        case 23:
+            mod = 6;
+            break;
+        case 24:
+            mod = 7;
+            break;
+        case 25:
+            mod = 7;
+            break;
+        case 26:
+            mod = 8;
+            break;
+        case 27:
+            mod = 8;
+            break;
+        case 28:
+            mod = 9;
+            break;
+        case 29:
+            mod = 9;
+            break;
+        case 30:
+            mod = 10;
+            break;
+        default:
+            break;
+    }
+
+    return mod;
+}
+
+int getHP(std::string char_class, std::string char_sub, int mod)
+{
+    int hp = 0;
+    int index = 0;
+    std::string class_list[12] = {"Barbarian", "Bard", "Cleric", "Druid",
+                                  "Fighter", "Monk", "Paladin", "Ranger",
+                                  "Rogue", "Sorcerer", "Warlock", "Wizard"};
+
+    for (int i = 0; i < 12; ++i)
+    {
+        if (char_class == class_list[i])
+        {
+            index = i;
+            break;
+        } else {
+            ++i;
+        }
+    }
+
+    switch(index)
+    {
+        case 0:
+            hp = 12;
+            break;
+        case 1:
+            hp = 8;
+            break;
+        case 2:
+            hp = 8;
+            break;
+        case 3:
+            hp = 8;
+            break;
+        case 4:
+            hp = 10;
+            break;
+        case 5:
+            hp = 8;
+            break;
+        case 6:
+            hp = 10;
+            break;
+        case 7:
+            hp = 10;
+            break;
+        case 8:
+            hp = 8;
+            break;
+        case 9:
+            hp = 6;
+            break;
+        case 10:
+            hp = 8;
+            break;
+        case 11:
+            hp = 6;
+            break;
+        default:
+            break;
+    }
+
+    if (char_sub == "Hill")
+        hp += 1;
+
+    hp += mod;
+
+    return hp;
 }

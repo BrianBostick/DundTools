@@ -1,6 +1,7 @@
 #ifndef DICEROLL_H
 #define DICEROLL_H
 
+#include "name_generator.h"
 #include "../include/ascii_nums.h"
 #include "../include/logos.h"
 #include "../include/tui.h"

@@ -1,5 +1,4 @@
-#include "../include/diceroll.h"
-#include "../include/logos.h"
+#include "../include/rolldice.h"
 #include <iostream>
 #include <string>
 #include <stdlib.h>
